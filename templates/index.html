@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computational Methods Interface</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 700px;
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #resultContainer {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-center">Computational Methods Interface</h2>
+
+        <!-- Method Selection -->
+        <div class="mb-3">
+            <label for="methodType" class="form-label">Select Method:</label>
+            <select class="form-select" id="methodType" onchange="updateMethodInputs()">
+                <option value="root_finding">Root Finding</option>
+                <option value="jacobi_method">Jacobi Method</option>
+                <option value="matrix_inversion">Matrix Inversion</option>
+                <option value="curve_fitting">Curve Fitting</option>
+                <option value="differentiation">Forward Difference</option>
+                <option value="taylor_series">Taylor Series</option>
+                <option value="integration">Simpson's Rule</option>
+            </select>
+        </div>
+
+        <!-- Dynamic Input Fields -->
+        <div class="card p-3">
+            <h5>Enter Parameters:</h5>
+            <div id="methodInputs"></div>
+        </div>
+
+        <button class="btn btn-primary mt-3 w-100" onclick="submitMethod()">Compute</button>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Result Display -->
+        <div id="resultContainer" class="alert alert-success mt-3">
+            <h5>Result:</h5>
+            <pre id="resultOutput"></pre>
+        </div>
+    </div>
+
+</body>
+</html>

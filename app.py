@@ -51,13 +51,21 @@ def jacobi_method():
 @app.route('/matrix_inversion', methods=['POST'])
 def matrix_inversion():
     data = request.json
-    matrix = np.array(data.get('matrix'))
+    print("Received Matrix Inversion Data:", data) 
 
+    matrix = data.get('matrix')
     if matrix is None:
         return jsonify({'error': 'Missing matrix input'}), 400
 
-    result = mm.iterative_matrix_inversion(matrix)
-    return jsonify(result)
+    try:
+        matrix = np.array(matrix, dtype=float) 
+        result = mm.iterative_matrix_inversion(matrix)
+        print("Matrix Inversion Result:", result) 
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': f'Failed to compute inverse: {e}'}), 500
+
+
 
 
 @app.route('/curve_fitting', methods=['POST'])

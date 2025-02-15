@@ -20,11 +20,35 @@ def jacobi_method(A, x0, tol=1e-6, max_iter=100):
 
 
 def iterative_matrix_inversion(A, tol=1e-6, max_iter=100):
-    I = np.eye(len(A))
-    X = np.linalg.inv(A + I) - I  # Initial approximation
-    for _ in range(max_iter):
-        X_new = X @ (2 * I - A @ X)
-        if np.linalg.norm(X_new - X, ord=np.inf) < tol:
-            return {'inverse': X_new.tolist(), 'iterations': _}
-        X = X_new
-    return {'inverse': X.tolist(), 'iterations': max_iter, 'warning': 'Max iterations reached'}
+    try:
+        A = np.array(A, dtype=float)
+        n = A.shape[0]
+
+        if A.shape[0] != A.shape[1]:
+            return {'error': 'Matrix must be square'}
+
+        if abs(np.linalg.det(A)) < 1e-10:
+            return {'error': 'Matrix is singular or nearly singular'}
+
+        alpha = 1.0 / np.linalg.norm(A, 1)
+        X = alpha * np.eye(n)
+        
+        I = np.eye(n)
+        
+        for i in range(max_iter):
+            X_new = X @ (2 * I - A @ X)
+            
+            error = np.linalg.norm(I - A @ X_new, ord=np.inf)
+            if error < tol:
+                return {'inverse': X_new.tolist(), 'iterations': i+1, 'error': float(error)}
+
+            if np.any(np.isnan(X_new)) or np.any(np.isinf(X_new)):
+                return {'error': 'Iteration diverged', 'iterations': i+1}
+            
+            X = X_new
+
+        error = np.linalg.norm(I - A @ X, ord=np.inf)
+        return {'inverse': X.tolist(), 'iterations': max_iter, 'warning': 'Max iterations reached', 'error': float(error)}
+
+    except Exception as e:
+        return {'error': f'Failed to compute inverse: {str(e)}'}
